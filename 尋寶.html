@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>尋寶</title>
+    </head>
+    <body>
+        <h1 id="heading">尋寶</h1>
+        <img id="map" width=1000 height=1000 src="http://nostarch.com/images/treasuremap.png"> <!--直接load網上圖片入去-->
+        <p id="distance"></p> <!--容器:儲存提示-->
+        <p id="remain"></p> <!--容器:儲存提示-->
+        <script src = "https://code.jquery.com/jquery-2.1.0.js"></script><!--js在browser載入套件的方法-->
+        <script>
+            function coordinate (size) {
+                return Math.floor(Math.random() * size);
+
+            }; //座標產生函式
+            function getDistance (event, target) {
+                var diffX = event.offsetX - target.x;
+                var diffY = event.offsetY - target.y;
+                return Math.sqrt((diffX**2) + (diffY**2)); //畢氏定理:求斜邊長度(c=開方(a^2+b^2))
+
+            }; //計算點擊位與目標位距離
+            function getDistanceHint (distance) {
+                if (distance < 10) {
+                    return "好很近";
+                } else if (distance < 20) {
+                    return "好近";
+                } else if (distance < 40) {
+                    return "近";
+                } else if (distance < 80) {
+                    return "麻麻近";
+                } else if (distance < 160) {
+                    return "遠左DD";
+                } else if (distance < 320) {
+                    return "遠";
+                } else if (distance < 600) {
+                    return "好遠";
+                } else {
+                    return "好很遠";
+                }
+            }; //距離提示
+
+            var width = 1000;
+            var height = 1000;
+            var reclick = 20; //殘click器
+            var clicks = 0; //殘click器
+            var target = {
+                x: coordinate(width),
+                y: coordinate(height)
+            }; //最終地點產生器
+
+            $("#map").click(function (event) { //click代表CLICK觸發、mousemove代表移動就觸發
+                clicks += 1;
+                reclick -= 1;
+                var distance = getDistance(event, target); //將設定好參數的函式加入變數
+                var distanceHint = getDistanceHint(distance); //將設定好參數的函式加入變數
+                $("#distance").text(distanceHint) //在網頁的distance段落填上提示文字
+                $("#remain").text("殘餘次數" + reclick) //在網頁的distance段落填上提示文字
+                if (distance < 8) {
+                    alert("已找到。花費次數：" + clicks);
+                }
+                if (reclick === 0) {
+                    alert("夠鐘");
+                    //停左呢條function;
+                }
+            });
+        </script>
+    </body>
+</html>
