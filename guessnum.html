@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Number Matching</title>
+    </head>
+    <body>
+        <h1 id="main-header"></h1>
+        <p id="p1"></p>
+        <p id="p2"></p>
+        <script src = "https://code.jquery.com/jquery-2.1.0.js"></script>
+        <script>
+            var name = prompt("What's your name?"); //prompt = 插入輸入框,()內打顯示內容
+            var retime = 15; // 紀錄殘餘答題次數，每答一次就累減1
+            alert("Hello " + name);
+            alert("Rule: guess a number from 1 to 100. \nYou have " + retime + " chances."); //彈出提示視窗:按了確認程式才會繼續往下跑,console.log則是出完就會跑到下一行
+
+            //第一步:建立數列範圍
+            var maxNum = 100;
+            var minNum = 1;
+            var trueNum = Math.floor(Math.random() * 100);
+
+            //第二步:建立答題收集框
+            var lastans = [];
+           
+            //第三步:邏輯主體
+            while (retime > 0) {
+                alert("Remaining chance: " + retime);
+                var input = prompt("Please guess a number");// 
+                var inputNum = parseInt(input);
+                var lastans = inputNum
+                if (!inputNum) {
+                    alert("It's not a number");
+                } else if (inputNum > maxNum || inputNum < minNum ) {
+                    alert("Please enter 1 to 100.");
+                // if (input === null) { //因為按取消就會輸出null
+                //     break; //取消則終止迴圈
+                } else {
+                        if (inputNum < trueNum) { //若迴圈中歷遍的指定字母與輸入字母一致、 且當時還未猜中答案
+                            alert('The correct number is larger than ' + inputNum + '.')
+                        } else if (inputNum > trueNum) { //若迴圈中歷遍的指定字母與輸入字母一致、 但已猜中答案
+                            alert('The correct number is small than ' + inputNum + '.')
+                        } else {
+                            break; //若既非大於也非小於，就等同是等於，跳出此迴圈執行下段
+                        }
+                retime -= 1; //答了才扣數，再放出一層就會答咩都扣，THIS IS A GOOD PRACTICE
+                }
+            };
+             //原則上迴圈應該把所有邏輯上可能發生的情況都做一個判斷及行動
+                
+
+            //第四步:宣告結束
+            if (inputNum === trueNum) { // 情況一:勝利結束
+                alert("YOU're WIN! The correct number is: " + trueNum);
+                $("#main-header").text("CONGRATULATIONS!");
+                $("#p1").text("Thank you for your playing.");
+                $("#p2").text("There will be more works upload in the future (I wish).");   
+            } else if (retime <= 0) { // 情況二:失敗結束
+                alert("Game is over, remaining chance is exhausted.");
+                $("#main-header").text("Never give up");
+                $("#p1").text("Just press F5 and try again.");
+                $("#p2").text("Wish you win the game next time.");  
+            };
+        </script>
+    </body>
+</html>
