@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1 id="heading">Treasure Hunt</h1>
-        <img id="map" width=780 height=780 src="http://nostarch.com/images/treasuremap.png"> <!--直接load網上圖片入去-->
+        <img id="map" width=500 height=500 src="http://nostarch.com/images/treasuremap.png"> <!--直接load網上圖片入去-->
         <p id="distance"></p> <!--容器:儲存提示-->
         <p id="remain"></p> <!--容器:儲存提示-->
         <script src = "https://code.jquery.com/jquery-2.1.0.js"></script><!--js在browser載入套件的方法-->
@@ -33,15 +33,15 @@
                     return "Quite far to the point";
                 } else if (distance < 320) {
                     return "Very far to the point";
-                } else if (distance < 600) {
-                    return "Extremely far to the point";
+//                 } else if (distance < 600) {
+//                     return "Extremely far to the point";
                 } else {
                     return "Out of range";
                 }
             }; //距離提示
 
-            var width = 800;
-            var height = 800;
+            var width = 500;
+            var height = 500;
             var reclick = 40; //殘click器
             var clicks = 0; //殘click器
             var target = {
