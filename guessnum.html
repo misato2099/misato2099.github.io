@@ -10,14 +10,14 @@
         <script src = "https://code.jquery.com/jquery-2.1.0.js"></script>
         <script>
             var name = prompt("What's your name?"); //prompt = 插入輸入框,()內打顯示內容
-            var retime = 10; // 紀錄殘餘答題次數，每答一次就累減1
+            var retime = 15; // 紀錄殘餘答題次數，每答一次就累減1
             alert("Hello " + name);
-            alert("Rule: guess a number from 1 to 100. \nYou have " + retime + " chances."); //彈出提示視窗:按了確認程式才會繼續往下跑,console.log則是出完就會跑到下一行
+            alert("Rule: guess a number from 1 to 1000. \nYou have " + retime + " chances."); //彈出提示視窗:按了確認程式才會繼續往下跑,console.log則是出完就會跑到下一行
 
             //第一步:建立數列範圍
-            var maxNum = 100;
+            var maxNum = 1000;
             var minNum = 1;
-            var trueNum = Math.floor(Math.random() * 100);
+            var trueNum = Math.floor(Math.random() * 1000);
 
             //第二步:建立答題收集框
             var lastans = [];
