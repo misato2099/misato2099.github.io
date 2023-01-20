@@ -1,0 +1,29 @@
+/* CSS套件=只保留style框中間所有東西，其他全刪掉即可 */
+*{  /*指定網頁內全部元素屬性*/
+    font-family:'Times New Roman', Times, serif;
+}
+p{ /*設定所有p元素屬性*/
+    text-align: center; /*教大小為48像素,與JS一樣收尾打;*/
+}
+#ookk{ /*鎖定特定id元素:#=id,與jquery相同*/
+    font-size: 150px; /*教大小為48像素,與JS一樣收尾打;*/
+}
+.a{ /*鎖定特定class元素:.=class*/
+    font-size: 100px; /*教大小為48像素,與JS一樣收尾打;*/
+}
+p,.a{ /*混選:元素間加,*/
+    color: gold;
+}
+#ookk p{ /*指定大元素後面的小元素加空格*/
+    font-style: italic;
+}
+#ookk p>span{ /*指定大元素後面的小元素再入面的子元素(通常是用<>圈起某個字加效果)用>*/
+    font-family: 'Courier New', Courier, monospace;
+}
+/* 超連結反應樣式 */
+a:link {color: #000000;} /*原始狀態*/
+a:visited {color: #FF0000;} /*點擊後*/
+a:hover {color: #00FF00;} /*Mouse移至link*/
+a:active {color: #0000FF;} /*Mouse click*/
+    /* 切記語句之間不能自相矛盾，不然會執行到天下大亂迷失方向 */
+    /* 基本執行邏輯:從最外層執行到最內層:body->article/section->div/h1->p->span/em/strong...... */
