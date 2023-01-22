@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Graffiti Board</title>
+    </head>
+    <body>
+        <script src = "https://code.jquery.com/jquery-2.1.0.js"></script><!--js在browser載入套件的方法-->
+        <canvas id="canvas" width="1700" height="1000"></canvas><!--插入canvas物件並設定畫布大小-->
+        <script>
+            const canvas = document.getElementById("canvas"); //鎖定canvas元素
+            const ctx = canvas.getContext("2d"); //取得繪製環境及設定為二維圖像
+            ctx.strokeRect(0,0,1700,1000);
+            //步驟1：設定圖案函式
+            function clickCircle (fill, lw, color, x, y, radiues) {
+                ctx.beginPath();
+                ctx.arc(x, y, radiues, 0, Math.PI * 2, false);
+                if (fill === true) { //填滿就set填滿色
+                    ctx.fillStyle = color;
+                    ctx.fill();  
+                } else { //空心就set粗幼跟線色
+                    ctx.lineWidth = lw ; //粗幼
+                    ctx.strokeStyle = color; //色
+                    ctx.stroke();
+                }
+            };
+            //**重要：完整點擊觸發器**//
+            let isDrawing = false; //先設定開關條件
+            ctx.fillStyle = "Black";
+            var startDraw = $("#canvas").mousedown(function (event) { //第一步：設定啟動條件：按下滑鼠
+                isDrawing = true;
+                });
+            var drawing = $("#canvas").mousemove(function (event) { //第二步：拖行動作（主要執行內容）
+                if (isDrawing === true) { //若開關器為打開：則執行以下動作
+                    x = event.pageX; //目標X座標=函式輸入參數產生的X座標
+                    y = event.pageY; //目標Y座標=函式輸入參數產生的Y座標
+                    clickCircle(true, 0, "Black", x, y, 3); //自動按上述座標生成圖案
+                    //ctx.fillRect(x, y, 10, 10);; //玩法2：就咁畫方形
+                }       
+            });
+            var endDraw = $("#canvas").mouseup(function (event) { //第三步：結束拖行動作：放開滑鼠
+                isDrawing = false
+            });
+        </script>
+    </body>
+</html>
