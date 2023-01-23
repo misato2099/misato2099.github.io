@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bouncing Ball B</title>
+    </head>
+    <body>
+        <h3 title="moving without clearing previous frame (random starting point)">Bouncing Ball Animation (B)</h3>
+        <script src = "https://code.jquery.com/jquery-2.1.0.js"></script><!--js在browser載入套件的方法-->
+        <canvas id="canvas" width="1400" height="600"></canvas><!--插入canvas物件並設定畫布大小-->
+        <script>
+            const canvas = document.getElementById("canvas"); //鎖定canvas元素
+            const ctx = canvas.getContext("2d"); //取得繪製環境及設定為二維圖像
+            let width = canvas.width;
+            let height = canvas.height;
+            var ballList = []; //建立量產原型物件儲存陣列框
+            var colorList = ['Gold','Red','Green','Blue','Orange','Cyan','Black',
+                            'Yellow','Silver','Pink','Purple','Grey','LightGreen',
+                            'YellowGreen','Teal','SlateBlue','SpringGreen','Magenta',
+                            'Lime','LimeGreen','Indigo','Gray','ForestGreen','DeepSkyBlue',
+                            'Fuchsia','HoneyDew','PaleGreen','Violet','Wheat','GoldenRod']; //設定隨機顏色盒
+            function pickColor(color) { //設定抽取顏色函式
+                return color[Math.floor(Math.random() * color.length)];
+            };
+
+            const circle = function (x, y, color, radius, fill) { //設定畫圓通用函式
+                ctx.fillStyle = color;
+                ctx.strokeStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+                if (fill) {
+                    ctx.fill();
+                } else {
+                    ctx.stroke();
+                }
+            };
+
+            const Ball = function () { //設定物件建構式及各項屬性
+                this.x = Math.random() * width; //物件原始x軸座標(分散隨機版)
+                this.y = Math.random() * height;  //物件原始y軸座標(分散隨機版)
+                this.xSpd = Math.random() * 10 - 5; //物件水平移動速度
+                this.ySpd = Math.random() * 10 - 5; //物件垂直移動速度
+                this.color = pickColor(colorList); //物件顏色
+            };
+
+            Ball.prototype.draw = function () {
+                circle(this.x, this.y, this.color, Math.random() * 10, true);
+            }; //建構式物件繪製函式
+
+            Ball.prototype.move = function () {
+                this.x += this.xSpd;
+                this.y += this.ySpd;
+            }; //為建構式物件插入移動屬性
+
+            Ball.prototype.checkCollision = function () { //為建構式物件插入反射屬性及條件
+                if (this.x < 0 || this.x > width) { //設定邊界判定範圍
+                    this.xSpd = -this.xSpd; //鏡像反彈
+                }
+                if (this.y < 0 || this.y > height) { //微調畫面像素誤差
+                    this.ySpd = -this.ySpd;
+                }
+            };
+
+            for (let i = 0; i < Math.floor(Math.random() * 150); i++) { //迴圈生產建構式物件並儲存於陣列內
+                ballList[i] = new Ball();
+            }
+
+            setInterval(function () { //建構動畫函式
+                for (let i = 0; i < ballList.length; i++) { //迴圈為陣列內的建構物件插入所有原型屬性
+                    ballList[i].draw(); //繪製建構物件形狀
+                    ballList[i].move(); //插入移動屬性
+                    ballList[i].checkCollision(); //插入插入反射屬性
+                }
+                ctx.strokeStyle = "Black"; //設定動畫邊框顏色
+                ctx.strokeRect(0, 0, width, height);//繪製動畫邊框
+            },10);
+        </script>
+    </body>
+</html>
