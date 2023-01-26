@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Snake</title>
+    </head>
+    <body>
+        <script src = "https://code.jquery.com/jquery-3.6.3.js"></script><!--js在browser載入套件的方法-->
+        <canvas id="canvas" width="500" height="500"></canvas><!--插入canvas物件並設定畫布大小-->
+        <script>
+            //第0步：建立canvas框架
+            const canvas = document.getElementById("canvas"); //鎖定canvas元素
+            const ctx = canvas.getContext("2d"); //取得繪製環境及設定為二維圖像
+            let width = canvas.width;
+            let height = canvas.height;
+            let blockSize = 10; //為框架加入網格:10 x 10 px
+            let widthInBlocks = width / blockSize; //平均除開要畫幾多條橫線(Block數計法：0－39)
+            let heightInBlocks = height / blockSize; //平均除開要畫幾多條直線
+            let drawBorder = function () { //邊框:逐條畫，避免蓋掉網格
+                ctx.fillStyle = "Black";
+                ctx.fillRect(0, 0, width, blockSize); //上框線(橫400，直10)
+                ctx.fillRect(0, height - blockSize, width, blockSize); //下框線(從邊框高10px的位置開始畫)
+                ctx.fillRect(0, 0, blockSize, height); //左框線(橫10，直400)
+                ctx.fillRect(width - blockSize, 0, blockSize, height); //右框線()
+            };
+            drawBorder();
+
+            //第1步：建立分數顯示物件
+            var score = 0;
+            let drawScore = function () {
+                ctx.clearRect(10, 10, width - 20, 40); //剛好抹走分數欄
+                ctx.fillStyle = "Black";
+                ctx.textBaseLine = "top"; //設定文字基線：即excel儲存格的靠上(top)靠中(middle)靠下(bottom)
+                ctx.textAlign = "left"; //文字靠左(left)靠中(center)靠右(right)
+                ctx.font = "24px Arial"; //左邊打px 空格右邊打字體名
+                ctx.fillText("Score : " + score, 15, 45); //輸入文字(內容，x軸，y軸)
+            };
+
+            //第2步：繪畫網格
+            const Block = function (col, row) { //建構網格物件
+                this.col = col;
+                this.row = row;
+            };
+            Block.prototype.drawSquare = function (color) { //繪製網格
+                let x = this.col * blockSize; //每格長x闊
+                let y = this.row * blockSize;
+                ctx.fillStyle = color; //網格顏色
+                ctx.fillRect(x, y, blockSize, blockSize); //執行：xy座標、高、闊
+            };
+
+            //第3步：繪畫食物
+            const circle = function (x, y, radius, color, fill) { //設定畫圓通用函式
+                ctx.fillStyle = color;
+                ctx.strokeStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+                if (fill) {
+                    ctx.fill();
+                } else {
+                    ctx.stroke();
+                }
+            };
+            Block.prototype.drawCircle = function (color) {
+                let x = this.col * blockSize + blockSize / 2; //定位到網格的圓心點
+                let y = this.row * blockSize + blockSize / 2; //定位到網格的圓心點
+                ctx.fillStyle = color; //圓形顏色
+                circle(x, y, blockSize / 2, color, true); //xy座標, 半徑, 顏色, 順時針畫: 剛好是一個直徑10px的圓形
+            };
+            let Apple = function () {
+                this.position = new Block(10, 10);
+            }; //設定位置為座標10,10
+            Apple.prototype.draw = function () {
+                this.position.drawCircle(colorList[Math.floor(Math.random() * 7)]);
+            };
+            Apple.prototype.move = function () { //食物生成位置設定
+                let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1; //扣除邊框(第0及39block)佔的Block數(1Block=10 x 10)，實際遊戲範圍只有38 x 38個block(1-38block)
+                let randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
+                this.position = new Block(randomCol, randomRow); //新建構物件的位置屬性
+            };
+
+            //第4步：設定鍵盤按鈕編碼
+            const directions = {
+                37:"left",
+                38:"up",
+                39:"right",
+                40:"down"
+            };
+            $("body").keydown(function (event) { //按鍵觸發器
+                let newDirection = directions[event.keyCode]; //讀取按鍵物典入event.keyCode並設定為變數
+                if (newDirection !== undefined) { //只要不是按空鍵，則貪食蛇按設定方向移動
+                    snake.setDirection(newDirection);
+                }
+            });
+
+            //第5-1步：繪畫貪食蛇
+            var colorList = ['Blue','Green','Red','Gold','Silver','Purple','Cyan']
+            var Snake = function () { //建構貪食蛇物件
+                this.segments = [ //建構出貪食蛇的初始長度：用陣列表達，陣列中每包含一個元素(Block)=一格長度
+                    new Block(7,5),
+                    new Block(6,5),
+                    new Block(5,5)
+                ];
+                this.direction = "right"; //目前移動方向：接合鍵盤字典
+                this.nextDirection = "right"; //下一格移動方向：用處是防止快速按相反方向時會自撞
+            };
+            Snake.prototype.draw = function () { //繪畫貪食蛇函式
+                for (let i = 0; i < this.segments.length; i ++) { //迴圈將陣列內每個元素都畫出來(用方形函式繪畫，用圓也可)
+                    this.segments[i].drawSquare(colorList[Math.floor(Math.random() * 7)]); //每節隨機抽色
+                };
+            };
+            //第5-2步：設定蛇的移動屬性及勝負條件
+            Snake.prototype.move = function () {
+                let head = this.segments[0]; //設定陣列第一元素是蛇頭
+                let newHead; //預留新蛇頭位置：隨移動方向即時更變
+                this.direction = this.nextDirection;
+
+                if (this.direction === "right"){
+                    newHead = new Block(head.col + 1, head.row); //向右行的情況下，生成新的蛇頭物件，其位置=原蛇頭往右平移一方，垂直方向不變)
+                } else if (this.direction === "left") {
+                    newHead = new Block(head.col - 1, head.row); //向左行的情況下，生成新的蛇頭物件，其位置=原蛇頭往左平移一方，垂直方向不變)
+                } else if (this.direction === "up") {
+                    newHead = new Block(head.col, head.row - 1); //向上行的情況下，生成新的蛇頭物件，其位置=原蛇頭水平方向不變，垂直方向朝上)
+                } else if (this.direction === "down") {
+                    newHead = new Block(head.col, head.row + 1)  //向下行的情況下，生成新的蛇頭物件，其位置=原蛇頭水平方向不變，垂直方向朝下)
+                }
+
+                if (this.checkCollision(newHead)) { //碰撞條件
+                    gameOver(); //執行gameover
+                    return; //跳出函式
+                }
+
+                this.segments.unshift(newHead); //在陣列開首加插新元素：新頭的位置
+
+                if (newHead.equal(apple.position)) { //逐格判定：若判定處於全等座標
+                    score ++; //加1分
+                    apple.move();//蘋果移動位置
+                    aniTime /= 1.2; //增加遊戲速度
+                } else {
+                    this.segments.pop(); //否則：蛇頭自動減一格
+                }
+            };
+            //第5-3步：碰撞判定
+            Block.prototype.equal = function (otherBlock) { //定義碰撞判定基本原則
+                return this.col === otherBlock.col && this.row === otherBlock.row; //本網格與其他網格xy座標完全相同的情況下，傳回true
+            };
+            Snake.prototype.checkCollision = function (head) {
+                var leftCollision = (head.col === 0); //撞左牆條件:打橫第0Block
+                var topCollision = (head.row === 0); //撞頂牆條件:打直第0Block
+                var rightCollision = (head.col === widthInBlocks - 1); //撞右牆條件：:打橫第39Block
+                var bottomCollision = (head.row === heightInBlocks - 1); //撞底牆條件：:打直第39Block
+
+                var wallCollision = leftCollision || topCollision || rightCollision || bottomCollision; //統合上述四個定義為撞牆定義
+
+                var selfCollision = false; //預設自撞狀態：否
+
+                for (let i = 0; i < this.segments.length; i ++) { //逐節檢查蛇頭座標是否與蛇身座標相同
+                    if (head.equal(this.segments[i])) {
+                        selfCollision = true;
+                    }
+                }
+                return wallCollision || selfCollision //最後回傳兩種撞牆結果：任一為true則再觸發
+            };
+            //第5-4步：轉向限制：四種方向條件不處理
+            Snake.prototype.setDirection = function (newDirection) {
+                if (this.direction === "up" && newDirection === "down") { //目前方向上、轉換方向下
+                    return; 
+                } else if (this.direction === "right" && newDirection ==="left") { //目前方向右、轉換方向左
+                    return;
+                } else if (this.direction === "down" && newDirection ==="up") { //目前方向下、轉換方向上
+                    return;
+                } else if (this.direction === "left" && newDirection ==="right") { //目前方向左、轉換方向右
+                    return;
+                }
+                this.nextDirection = newDirection; //上述條件以外的轉向都會處理
+            };
+
+            //第6步：失敗條件
+            var gameOver = function () {
+                clearInterval(intervalId); //執行動作:停止遊戲核心迴圈運行，然後輸出下面文字到畫面
+                ctx.font = "60px Arial";
+                ctx.fillStyle = "Black";
+                ctx.textAlign = "center";
+                ctx.textBaseLine = "middle";
+                ctx.fillText("Game Over", width / 2, height / 2); //大字標題檔在畫面正中
+            };
+
+            // //第7步：運行整個遊戲
+            let snake = new Snake(); //生成貪食蛇
+            let apple = new Apple(); //生成食物
+            var intervalId = setInterval(function (){ //遊戲運行核心：將上述所有物件函式組合
+                ctx.clearRect(0, 0, width, height); //清除上一幀畫面
+                drawScore(); //繪畫分數版
+                snake.move(); //引入貪食蛇移動屬性
+                snake.draw(); //繪畫貪食蛇
+                apple.draw(); //繪畫食物
+                drawBorder(); //繪畫邊框
+            }, 50); //每50毫秒執行迴圈一次
+        </script>
+    </body>
+</html>
