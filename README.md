@@ -3,3 +3,4 @@
 # 2023/01/22: Homepage updated & Javascript works uploaded.
 # 2023/01/23: 3 Javascript animations uploaded.
 # 2023/01/26: 1 Javascript mini game uploaded.
+# 2023/01/27: Repair the img link and size of Treasure Hunt for mobile device.
