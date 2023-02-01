@@ -146,7 +146,7 @@
                 if (newHead.equal(apple.position)) { 
                     score ++; 
                     apple.move();
-                    aniTime -= 1; 
+                    aniTime /= 1.05; 
                 } else {
                     this.segments.pop(); 
                 }
