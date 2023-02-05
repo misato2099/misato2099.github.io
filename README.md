@@ -5,3 +5,4 @@
 2023/01/26: 1 Javascript mini game uploaded.<br><br>
 2023/01/27: Repair the img link and size of Treasure Hunt for mobile device.
 2023/02/01: Fix the bugs of Snake.
+2023/02/05: Update homepage.
