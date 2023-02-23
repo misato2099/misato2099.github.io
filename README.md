@@ -6,3 +6,4 @@
 2023/01/27: Repair the img link and size of Treasure Hunt for mobile device.
 2023/02/01: Fix the bugs of Snake.
 2023/02/05: Update homepage.
+2023/02/23: Update homepage.
