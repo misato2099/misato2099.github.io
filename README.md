@@ -8,4 +8,5 @@
 2023/02/05: Update homepage.<br><br>
 2023/02/23: Update homepage.<br><br>
 2023/05/02: Update homepage.<br><br>
-2023/08/09: Update homepage.
+2023/08/09: Update homepage.<br><br>
+2024/01/22: Update homepage: language proficiency.
