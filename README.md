@@ -9,4 +9,5 @@
 2023/02/23: Update homepage.<br><br>
 2023/05/02: Update homepage.<br><br>
 2023/08/09: Update homepage.<br><br>
-2024/01/22: Update homepage: language proficiency.
+2024/01/22: Update homepage: language proficiency.<br><br>
+2024/08/26: Update homepage: language proficiency and working experience.
